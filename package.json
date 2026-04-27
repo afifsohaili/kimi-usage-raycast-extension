@@ -1,0 +1,60 @@
+{
+  "name": "kimi-code-usage",
+  "title": "Kimi Code Usage",
+  "description": "Monitor your Kimi for Coding API usage and rate limits from the menu bar",
+  "icon": "kimi-icon-512.png",
+  "author": "afifsohaili",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "kimi-usage",
+      "title": "Kimi Usage",
+      "subtitle": "Menu Bar",
+      "description": "Show Kimi Code usage in the menu bar",
+      "mode": "menu-bar",
+      "interval": "5m"
+    },
+    {
+      "name": "kimi-usage-detail",
+      "title": "Kimi Usage Detail",
+      "description": "Show detailed Kimi Code usage information",
+      "mode": "view"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "apiKey",
+      "title": "Kimi API Key",
+      "description": "Your Kimi for Coding API key",
+      "type": "password",
+      "required": true,
+      "placeholder": "sk-..."
+    },
+    {
+      "name": "baseUrl",
+      "title": "Base URL",
+      "description": "Kimi Code API base URL (optional)",
+      "type": "textfield",
+      "required": false,
+      "default": "https://api.kimi.com/coding/v1",
+      "placeholder": "https://api.kimi.com/coding/v1"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.85.0",
+    "@raycast/utils": "^1.17.0",
+    "@types/react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.8.10",
+    "@types/react": "^19.2.14",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "build": "ray build -e dist -o dist && cp *.png dist/",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}

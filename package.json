@@ -3,8 +3,11 @@
   "title": "Kimi Code Usage",
   "description": "Monitor your Kimi for Coding API usage and rate limits from the menu bar",
   "icon": "kimi-icon-512.png",
-  "author": "afifsohaili",
+  "author": "afif_sohaili",
   "license": "MIT",
+  "categories": [
+    "Developer Tools"
+  ],
   "commands": [
     {
       "name": "kimi-usage",
@@ -51,7 +54,7 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "build": "ray build -e dist -o dist && cp *.png dist/",
+    "build": "ray build -e dist -o dist",
     "dev": "ray develop",
     "fix-lint": "ray lint --fix",
     "lint": "ray lint",

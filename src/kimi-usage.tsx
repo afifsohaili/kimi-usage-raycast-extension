@@ -7,13 +7,18 @@ interface Preferences {
   baseUrl: string;
 }
 
-function getUsageColor(used: number, limit: number): Color {
-  if (limit <= 0) return Color.PrimaryText;
+function getUsageColor(used: number | null, limit: number | null): Color {
+  if (used === null || limit === null || limit <= 0) return Color.PrimaryText;
   const pct = used / limit;
   if (pct >= 0.9) return Color.Red;
   if (pct >= 0.7) return Color.Orange;
   if (pct >= 0.5) return Color.Yellow;
   return Color.Green;
+}
+
+function formatPct(used: number | null, limit: number | null): string {
+  if (used === null || limit === null || limit <= 0) return "--";
+  return `${Math.round((used / limit) * 100)}%`;
 }
 
 export default function Command() {
@@ -50,9 +55,9 @@ export default function Command() {
   // Menu bar title shows rate limit percentage or weekly if no rate limit
   let title: string;
   if (rateLimit) {
-    title = `${rateLimit.limit > 0 ? Math.round((rateLimit.used / rateLimit.limit) * 100) : 0}%`;
+    title = formatPct(rateLimit.used, rateLimit.limit);
   } else {
-    title = `${weekly.limit > 0 ? Math.round((weekly.used / weekly.limit) * 100) : 0}%`;
+    title = formatPct(weekly.used, weekly.limit);
   }
 
   return (
@@ -60,7 +65,7 @@ export default function Command() {
       {rateLimit && (
         <MenuBarExtra.Section title="5h Rate Limit">
           <MenuBarExtra.Item
-            title={`${rateLimit.limit > 0 ? Math.round((rateLimit.used / rateLimit.limit) * 100) : 0}% used,`}
+            title={`${formatPct(rateLimit.used, rateLimit.limit)} used,`}
             icon={KIMI_ICON}
             subtitle={formatResetTime(rateLimit.resetTime)}
           />
@@ -69,7 +74,7 @@ export default function Command() {
 
       <MenuBarExtra.Section title="Weekly Quota">
         <MenuBarExtra.Item
-          title={`${weekly.limit > 0 ? Math.round((weekly.used / weekly.limit) * 100) : 0}% used,`}
+          title={`${formatPct(weekly.used, weekly.limit)} used,`}
           icon={KIMI_ICON}
           subtitle={formatResetTime(weekly.resetTime)}
         />

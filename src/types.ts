@@ -39,36 +39,41 @@ export interface KimiUsageResponse {
   subType: string;
 }
 
+function safeParseInt(str: string): number | null {
+  const n = parseInt(str, 10);
+  return isNaN(n) ? null : n;
+}
+
 export function getRateLimitWindow(usage: KimiUsageResponse): {
-  used: number;
-  limit: number;
-  remaining: number;
+  used: number | null;
+  limit: number | null;
+  remaining: number | null;
   resetTime: string;
 } | null {
   const rateLimit = usage.limits.find(
     (l) => l.window.timeUnit === "TIME_UNIT_MINUTE" && l.window.duration === 300
   );
   if (!rateLimit) return null;
-  const limit = parseInt(rateLimit.detail.limit, 10);
-  if (limit <= 0) return null;
+  const limit = safeParseInt(rateLimit.detail.limit);
+  if (limit === null || limit <= 0) return null;
   return {
-    used: parseInt(rateLimit.detail.used, 10),
+    used: safeParseInt(rateLimit.detail.used),
     limit,
-    remaining: parseInt(rateLimit.detail.remaining, 10),
+    remaining: safeParseInt(rateLimit.detail.remaining),
     resetTime: rateLimit.detail.resetTime,
   };
 }
 
 export function getWeeklyUsage(usage: KimiUsageResponse): {
-  used: number;
-  limit: number;
-  remaining: number;
+  used: number | null;
+  limit: number | null;
+  remaining: number | null;
   resetTime: string;
 } {
   return {
-    used: parseInt(usage.usage.used, 10),
-    limit: parseInt(usage.usage.limit, 10),
-    remaining: parseInt(usage.usage.remaining, 10),
+    used: safeParseInt(usage.usage.used),
+    limit: safeParseInt(usage.usage.limit),
+    remaining: safeParseInt(usage.usage.remaining),
     resetTime: usage.usage.resetTime,
   };
 }
@@ -81,6 +86,12 @@ export function formatResetTime(isoString: string): string {
   const diffHours = Math.floor(diffMs / 3600000);
 
   if (diffMins < 1) return "resets soon";
+  if (diffHours >= 24) {
+    const days = Math.floor(diffHours / 24);
+    const remHours = diffHours % 24;
+    const remMins = diffMins % 60;
+    return `resets in ${days}d ${remHours}h ${remMins}m`;
+  }
   if (diffMins < 60) return `resets in ${diffMins}m`;
   const remainingMins = diffMins % 60;
   if (remainingMins === 0) return `resets in ${diffHours}h`;
